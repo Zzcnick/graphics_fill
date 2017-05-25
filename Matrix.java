@@ -89,11 +89,55 @@ public class Matrix {
     public boolean add_triangle(double x1, double y1, double z1,
 				double x2, double y2, double z2,
 				double x3, double y3, double z3, Pixel p) {
+	/* Line Mesh
 	add_point(x1, y1, z1);
 	add_point(x2, y2, z2);
 	add_point(x3, y3, z3);
 	size++;
 	colors.add(p);
+	// */
+
+	// /* Filled Triangle
+	y1 = (int)y1; y2 = (int)y2; y3 = (int)y3; 
+	int ty, my, by;
+	double tx, mx, bx; // tz, mz, bz;
+	// Determining Triangle Order
+	if (y1 > y2) { // y3? > y1 > y3? > y2 > y3?
+	    if (y1 > y3) { // y1 > [ y2 >? y3 ]
+		ty = y1; tx = x1; // tz = z1;
+		if (y3 > y2) { // y1 > y3 > y2
+		    my = y3; mx = x3; // mz = z3;
+		    by = y2; bx = x2; // bz = z2;
+		} else { // y1 > y2 > y3
+		    my = y2; mx = x2; // mz = z2;
+		    by = y3; bx = x3; // bz = z3;
+		}
+	    } else { // y3 > y1 > y2 
+		ty = y3; tx = x3; // tz = z3;
+		my = y1; mx = x1; // mz = z1;
+		by = y2; bx = x2; // bz = z2;
+	    }
+	} else { // y3? > y2 > y3? > y1 > y3?
+	    if (y2 > y3) { // y2 > [ y1 >? y3 ]
+		ty = y2; tx = x2; // tz = z2;
+		if (y3 > y1) { // y2 > y3 > y1
+		    my = y3; mx = x3; // mz = z3;
+		    by = y1; bx = x1; // bz = z1;
+		} else { // y2 > y1 > y3
+		    my = y1; mx = x1; // mz = z1;
+		    by = y3; bx = x3; // bz = z3;
+		}
+	    } else { // y3 > y2 > y1
+		ty = y3; tx = x3; // tz = z3;
+		my = y2; mx = x2; // mz = z2;
+		by = y1; bx = x1; // bz = z1;
+	    }
+	}
+
+	double dxL = botx
+	// Bottom Up Traversal
+	// */
+	
 	return true;
     }
     public boolean add_triangle(double x1, double y1, double z1,
