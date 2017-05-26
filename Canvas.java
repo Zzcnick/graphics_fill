@@ -563,7 +563,6 @@ public class Canvas {
 	double[] p1, p2;
 	double x1, x2, y1, y2;
 	Pixel p;
-
 	if (md == 2) {
 	    while (edgelist.hasNext()) {
 		p1 = edgelist.next();

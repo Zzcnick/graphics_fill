@@ -98,46 +98,56 @@ public class Matrix {
 	// */
 
 	// /* Filled Triangle
-	y1 = (int)y1; y2 = (int)y2; y3 = (int)y3; 
+	int yi1 = (int)y1; int yi2 = (int)y2; int yi3 = (int)y3; 
 	int ty, my, by;
 	double tx, mx, bx; // tz, mz, bz;
 	// Determining Triangle Order
-	if (y1 > y2) { // y3? > y1 > y3? > y2 > y3?
-	    if (y1 > y3) { // y1 > [ y2 >? y3 ]
-		ty = y1; tx = x1; // tz = z1;
-		if (y3 > y2) { // y1 > y3 > y2
-		    my = y3; mx = x3; // mz = z3;
-		    by = y2; bx = x2; // bz = z2;
+	if (yi1 > yi2) { // y3? > y1 > y3? > y2 > y3?
+	    if (yi1 > yi3) { // y1 > [ y2 >? y3 ]
+		ty = yi1; tx = x1; // tz = z1;
+		if (yi3 > yi2) { // y1 > y3 > y2
+		    my = yi3; mx = x3; // mz = z3;
+		    by = yi2; bx = x2; // bz = z2;
 		} else { // y1 > y2 > y3
-		    my = y2; mx = x2; // mz = z2;
-		    by = y3; bx = x3; // bz = z3;
+		    my = yi2; mx = x2; // mz = z2;
+		    by = yi3; bx = x3; // bz = z3;
 		}
 	    } else { // y3 > y1 > y2 
-		ty = y3; tx = x3; // tz = z3;
-		my = y1; mx = x1; // mz = z1;
-		by = y2; bx = x2; // bz = z2;
+		ty = yi3; tx = x3; // tz = z3;
+		my = yi1; mx = x1; // mz = z1;
+		by = yi2; bx = x2; // bz = z2;
 	    }
 	} else { // y3? > y2 > y3? > y1 > y3?
-	    if (y2 > y3) { // y2 > [ y1 >? y3 ]
-		ty = y2; tx = x2; // tz = z2;
-		if (y3 > y1) { // y2 > y3 > y1
-		    my = y3; mx = x3; // mz = z3;
-		    by = y1; bx = x1; // bz = z1;
+	    if (yi2 > yi3) { // y2 > [ y1 >? y3 ]
+		ty = yi2; tx = x2; // tz = z2;
+		if (yi3 > yi1) { // y2 > y3 > y1
+		    my = yi3; mx = x3; // mz = z3;
+		    by = yi1; bx = x1; // bz = z1;
 		} else { // y2 > y1 > y3
-		    my = y1; mx = x1; // mz = z1;
-		    by = y3; bx = x3; // bz = z3;
+		    my = yi1; mx = x1; // mz = z1;
+		    by = yi3; bx = x3; // bz = z3;
 		}
 	    } else { // y3 > y2 > y1
-		ty = y3; tx = x3; // tz = z3;
-		my = y2; mx = x2; // mz = z2;
-		by = y1; bx = x1; // bz = z1;
+		ty = yi3; tx = x3; // tz = z3;
+		my = yi2; mx = x2; // mz = z2;
+		by = yi1; bx = x1; // bz = z1;
 	    }
 	}
-
-	double dxL = botx
-	// Bottom Up Traversal
-	// */
 	
+	double xL = bx; // bx -> tx
+	double xR = bx; // bx -> mx -> tx
+	double dx0 = (ty == by) ? 0 : (tx - bx) / (ty - by); // Slope of Longer Side
+	double dx1 = (my == by) ? 0 : (mx - bx) / (my - by); // Slope of Shorter Side - Changes
+	// System.out.println("dx0:\t" + dx0 + "\tdx1:\t" + dx1); // Debugging
+	// Bottom Up Traversal
+	for (int y = by; y <= ty; y++) {
+	    add_edge(xL, y, xR, y);
+	    // System.out.println("y: " + y + "\txL:\t" + xL + "\txR:\t" + xR); // Debugging
+	    if (y == my) // Switch Slope of Shorter Side
+		dx1 = (ty == my) ? 0 : (tx - mx) / (ty - my);
+	    xL += dx0; xR += dx1; 
+	}
+	// */	
 	return true;
     }
     public boolean add_triangle(double x1, double y1, double z1,

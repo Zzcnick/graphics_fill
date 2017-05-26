@@ -122,8 +122,20 @@ public class Picture {
 		// System.out.println("COMMAND: " + buffer); // Debugging
 		// System.out.println("TYPES  : " + typebuffer); // Debugging
 	    }
-	    return;
-	} 
+	} // End Parser
+
+	// Testing Space
+	Canvas c = new Canvas();
+	Matrix em = c.getEdges();
+	em.add_triangle(10,10,0,50,50,0,10,100,0);
+	em.add_triangle(250,250,0,
+			100,450,0,
+			400,425,0);
+
+	c.draw(2);
+	c.save("tri.ppm");
+	System.out.println("Execution complete.");
+	return;
     }
 
     // Execution Helper - Type Checking
