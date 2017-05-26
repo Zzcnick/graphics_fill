@@ -245,7 +245,8 @@ public class Canvas {
 	Matrix em = box_edges(x,y,z,dx,dy,dz,p);
 	edges.append(em);
 	apply();
-	draw(3);
+	// draw(3); // Old Version, Not Filled In
+	draw(2); // New Version, Filled In
 	return true;
     }
     public boolean box(double x, double y, double z, 
@@ -255,9 +256,9 @@ public class Canvas {
     public Matrix box_edges(double x, double y, double z, 
 			    double dx, double dy, double dz, Pixel p) {
 	Matrix em = new Matrix();
-	
+
+	// Edge Implementation ==============
 	if (mode == 2) { // Deprecated
-	    // Edge Implementation ==============
 	    em.add_edge(x,y,z,x+dx,y,z,p);
 	    em.add_edge(x,y,z,x,y-dy,z,p);
 	    em.add_edge(x,y,z,x,y,z-dz,p);
@@ -270,11 +271,11 @@ public class Canvas {
 	    em.add_edge(x+dx,y-dy,z,x+dx,y-dy,z-dz,p);
 	    em.add_edge(x+dx,y,z-dz,x+dx,y-dy,z-dz,p);
 	    em.add_edge(x,y-dy,z-dz,x+dx,y-dy,z-dz,p);
-	    // ==================================== */
 	}
+	// ==================================== */
 
+	// Polygon Implementation ===========
 	else if (mode == 3) {
-	    // Polygon Implementation ===========
 	    em.add_triangle(x+dx,y-dy,z-dz,x,y-dy,z,x,y-dy,z-dz,p); // F
 	    em.add_triangle(x+dx,y-dy,z-dz,x+dx,y-dy,z,x,y-dy,z,p); // F
 	    em.add_triangle(x+dx,y-dy,z,x+dx,y-dy,z-dz,x+dx,y,z-dz,p); // R
@@ -287,8 +288,9 @@ public class Canvas {
 	    em.add_triangle(x,y,z,x+dx,y-dy,z,x+dx,y,z,p); // T
 	    em.add_triangle(x,y,z,x+dx,y,z,x+dx,y,z-dz,p); // Back
 	    em.add_triangle(x,y,z,x+dx,y,z-dz,x,y,z-dz,p); // Back
-	    // ==================================== */
 	}
+	// ==================================== */
+
 	return em;
     }
     public Matrix box_edges(double x, double y, double z, 
@@ -300,7 +302,8 @@ public class Canvas {
 	Matrix em = sphere_edges(cx,cy,cz,r,p);
 	edges.append(em);
 	apply();
-	draw(3);
+	// draw(3); // Old Version, Not Filled In
+	draw(2); // New Version, Filled In
 	return true;
     }
     public boolean sphere(double cx, double cy, double cz, double r) {
@@ -310,7 +313,7 @@ public class Canvas {
 	Matrix em = new Matrix();
 	double s; // Semicircle
 	double t; // Rotation
-	int n = 20; // Steps
+	int n = 5; // Steps
 	double ds = Math.PI / n; // Semicircle Step
 	double dt = ds; // Rotation Step
 	double x, y, z;
@@ -369,7 +372,8 @@ public class Canvas {
 	Matrix em = torus_edges(cx,cy,cz,r,R,p);
 	edges.append(em);
 	apply();
-	draw(3);
+	// draw(3); // Old Version, Not Filled In
+	draw(2); // New Version, Filled In
 	return true;
     }
     public boolean torus(double cx, double cy, double cz, double r, double R) {
@@ -455,16 +459,16 @@ public class Canvas {
 	double x = x0; double y = y0;
 	double newx, newy;
 	for (double t = 0; t < 1.001; t += 0.005) {
-	        newx = ax * t * t * t +
-		    bx * t * t +
-		    cx * t + 
-		    dx;
-		    newy = ay * t * t * t +
-			by * t * t +
-			cy * t +
-			dy;
-		    edge(x, y, 0, newx, newy, 0, p);
-		    x = newx; y = newy;
+	    newx = ax * t * t * t +
+		bx * t * t +
+		cx * t + 
+		dx;
+	    newy = ay * t * t * t +
+		by * t * t +
+		cy * t +
+		dy;
+	    edge(x, y, 0, newx, newy, 0, p);
+	    x = newx; y = newy;
 	}
 	apply();
 	draw(2);
@@ -505,16 +509,16 @@ public class Canvas {
 	double x = x0; double y = y0;
 	double newx, newy;
 	for (double t = 0; t < 1.001; t += 0.005) {
-	        newx =  ax * t * t * t +
-		    bx * t * t +
-		    cx * t + 
-		    dx;
-		    newy = ay * t * t * t +
-			by * t * t +
-			cy * t +
-			dy;
-		    edge(x, y, 0, newx, newy, 0, p);
-		    x = newx; y = newy;
+	    newx =  ax * t * t * t +
+		bx * t * t +
+		cx * t + 
+		dx;
+	    newy = ay * t * t * t +
+		by * t * t +
+		cy * t +
+		dy;
+	    edge(x, y, 0, newx, newy, 0, p);
+	    x = newx; y = newy;
 	}
 	apply();
 	draw(2);

@@ -89,6 +89,10 @@ public class Matrix {
     public boolean add_triangle(double x1, double y1, double z1,
 				double x2, double y2, double z2,
 				double x3, double y3, double z3, Pixel p) {
+	// /* Color Debugging
+	p = new Pixel(1);
+	// */
+
 	/* Line Mesh
 	add_point(x1, y1, z1);
 	add_point(x2, y2, z2);
@@ -133,7 +137,11 @@ public class Matrix {
 		by = yi1; bx = x1; // bz = z1;
 	    }
 	}
-	
+
+	System.out.println("top: " + tx + "," + ty + "\n" + 
+			   "mid: " + mx + "," + my + "\n" + 
+			   "bot: " + bx + "," + by); // */ Debugging 
+
 	double xL = bx; // bx -> tx
 	double xR = bx; // bx -> mx -> tx
 	double dx0 = (ty == by) ? 0 : (tx - bx) / (ty - by); // Slope of Longer Side
@@ -141,7 +149,7 @@ public class Matrix {
 	// System.out.println("dx0:\t" + dx0 + "\tdx1:\t" + dx1); // Debugging
 	// Bottom Up Traversal
 	for (int y = by; y <= ty; y++) {
-	    add_edge(xL, y, xR, y);
+	    add_edge(xL, y, xR, y, p);
 	    // System.out.println("y: " + y + "\txL:\t" + xL + "\txR:\t" + xR); // Debugging
 	    if (y == my) // Switch Slope of Shorter Side
 		dx1 = (ty == my) ? 0 : (tx - mx) / (ty - my);
