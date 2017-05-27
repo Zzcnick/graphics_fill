@@ -677,7 +677,8 @@ public class Canvas {
     public boolean draw_pixel(int x, int y, Pixel p) {
 	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
 	    return false;
-	canvas[y][x] = p;
+	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x]))
+	    canvas[y][x] = p;
 	return true;
     }
     public boolean draw_pixel(int x, int y) {

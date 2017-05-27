@@ -308,7 +308,6 @@ public class Picture {
 	    // Check if Command Executed
 	    if (!executed)    
 		System.out.println("ERROR: " + buffer + " does not match any implementation of " + cmd);
-	    System.out.println("Huh???");
 	    buffer.clear();
 	    typebuffer.clear();
 	}
