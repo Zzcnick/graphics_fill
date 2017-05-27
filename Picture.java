@@ -123,17 +123,18 @@ public class Picture {
 		// System.out.println("TYPES  : " + typebuffer); // Debugging
 	    }
 	} // End Parser
+	else {
+	    // Testing Space
+	    Canvas c = new Canvas();
+	    Matrix em = c.getEdges();
+	    em.add_triangle(100,100,100,
+			    200,100,100,
+			    150,150,100);
 
-	// Testing Space
-	Canvas c = new Canvas();
-	Matrix em = c.getEdges();
-	em.add_triangle(100,100,100,
-			200,100,100,
-			150,150,100);
-
-	c.draw(2);
-	c.save("tri.ppm");
-	System.out.println("Execution complete.");
+	    c.draw(2);
+	    c.save("tri.ppm");
+	    System.out.println("Execution complete.");
+	}
 	return;
     }
 
@@ -307,7 +308,7 @@ public class Picture {
 	    // Check if Command Executed
 	    if (!executed)    
 		System.out.println("ERROR: " + buffer + " does not match any implementation of " + cmd);
-
+	    System.out.println("Huh???");
 	    buffer.clear();
 	    typebuffer.clear();
 	}

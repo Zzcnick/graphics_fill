@@ -245,8 +245,7 @@ public class Canvas {
 	Matrix em = box_edges(x,y,z,dx,dy,dz,p);
 	edges.append(em);
 	apply();
-	// draw(3); // Old Version, Not Filled In
-	draw(2); // New Version, Filled In
+	draw(3);
 	return true;
     }
     public boolean box(double x, double y, double z, 
@@ -302,8 +301,7 @@ public class Canvas {
 	Matrix em = sphere_edges(cx,cy,cz,r,p);
 	edges.append(em);
 	apply();
-	// draw(3); // Old Version, Not Filled In
-	draw(2); // New Version, Filled In
+	draw(3);
 	return true;
     }
     public boolean sphere(double cx, double cy, double cz, double r) {
@@ -313,7 +311,7 @@ public class Canvas {
 	Matrix em = new Matrix();
 	double s; // Semicircle
 	double t; // Rotation
-	int n = 5; // Steps
+	int n = 20; // Steps
 	double ds = Math.PI / n; // Semicircle Step
 	double dt = ds; // Rotation Step
 	double x, y, z;
@@ -372,14 +370,12 @@ public class Canvas {
 	Matrix em = torus_edges(cx,cy,cz,r,R,p);
 	edges.append(em);
 	apply();
-	// draw(3); // Old Version, Not Filled In
-	draw(2); // New Version, Filled In
+	draw(3);
 	return true;
     }
     public boolean torus(double cx, double cy, double cz, double r, double R) {
 	return torus(cx, cy, cz, r, R, defaultColor);
     }
-    // To Make More Efficient
     public Matrix torus_edges(double cx, double cy, double cz, double r, double R, Pixel p) {
 	Matrix em = new Matrix();
 	double s; // Circle
@@ -566,7 +562,7 @@ public class Canvas {
 	Iterator<Pixel> colors = edges.colorIterator();
 	double[] p1, p2;
 	double x1, x2, y1, y2;
-	Pixel p;
+	Pixel p = new Pixel(0,0,0);
 	if (md == 2) {
 	    while (edgelist.hasNext()) {
 		p1 = edgelist.next();
@@ -596,13 +592,73 @@ public class Canvas {
 		double dx1 = x2 - x1; double dx2 = x3 - x2;
 		double dy1 = y2 - y1; double dy2 = y3 - y2; 
 		// double dz1 = z2 - z1; double dz2 = z3 - z2; // Not Needed
-		if (dx1 * dy2 - dy1 * dx2 > 0) { 
-		    // Cross Product Z is Positive (Facing Us)
-		    line((int)x1, (int)y1, (int)x2, (int)y2, p);
-		    line((int)x2, (int)y2, (int)x3, (int)y3, p);
-		    line((int)x3, (int)y3, (int)x1, (int)y1, p);
-		}
+		if (dx1 * dy2 - dy1 * dx2 > 0) { // Cross Product Z is Positive (Facing Us)
+		    /* // Line Mesh 
+		       line((int)x1, (int)y1, (int)x2, (int)y2, p);
+		       line((int)x2, (int)y2, (int)x3, (int)y3, p);
+		       line((int)x3, (int)y3, (int)x1, (int)y1, p);
+		    // */
+
+		    // /* Filled Triangle
+		    int yi1 = (int)y1; int yi2 = (int)y2; int yi3 = (int)y3; 
+		    int ty, my, by;
+		    double tx, mx, bx; // tz, mz, bz;
+		    // Determining Triangle Order
+		    if (yi1 > yi2) { // y3? > y1 > y3? > y2 > y3?
+			if (yi1 > yi3) { // y1 > [ y2 >? y3 ]
+			    ty = yi1; tx = x1; // tz = z1;
+			    if (yi3 > yi2) { // y1 > y3 > y2
+				my = yi3; mx = x3; // mz = z3;
+				by = yi2; bx = x2; // bz = z2;
+			    } else { // y1 > y2 > y3
+				my = yi2; mx = x2; // mz = z2;
+				by = yi3; bx = x3; // bz = z3;
+			    }
+			} else { // y3 > y1 > y2 
+			    ty = yi3; tx = x3; // tz = z3;
+			    my = yi1; mx = x1; // mz = z1;
+			    by = yi2; bx = x2; // bz = z2;
+			}
+		    } else { // y3? > y2 > y3? > y1 > y3?
+			if (yi2 > yi3) { // y2 > [ y1 >? y3 ]
+			    ty = yi2; tx = x2; // tz = z2;
+			    if (yi3 > yi1) { // y2 > y3 > y1
+				my = yi3; mx = x3; // mz = z3;
+				by = yi1; bx = x1; // bz = z1;
+			    } else { // y2 > y1 > y3
+				my = yi1; mx = x1; // mz = z1;
+				by = yi3; bx = x3; // bz = z3;
+			    }
+			} else { // y3 > y2 > y1
+			    ty = yi3; tx = x3; // tz = z3;
+			    my = yi2; mx = x2; // mz = z2;
+			    by = yi1; bx = x1; // bz = z1;
+			}
+		    }
+
+		    /* System.out.println("top: " + tx + "," + ty + "\n" + 
+		       "mid: " + mx + "," + my + "\n" + 
+		       "bot: " + bx + "," + by); // */ // Debugging 
+
+		    double xL = bx; // bx -> tx
+		    double xR = bx; // bx -> mx -> tx
+		    double dxL = (ty == by) ? 0 : (tx - bx) / (ty - by); // Slope of Longer Side
+		    double dxR = (my == by) ? 0 : (mx - bx) / (my - by); // Slope of Shorter Side - Changes
+		    // System.out.println("dx0:\t" + dx0 + "\tdx1:\t" + dx1); // Debugging
+		    // Bottom Up Traversal
+		    for (int y = by; y <= ty; y++) {
+			// System.out.println("y: " + y + "\txL:\t" + xL + "\txR:\t" + xR); // Debugging
+			if (y == my) { // Switch Slope of Shorter Side
+			    dxR = (ty == my) ? 0 : (tx - mx) / (ty - my);
+			    xR = mx;
+			}
+			line((int)xL, y, (int)xR, y, p);
+			xL += dxL; xR += dxR; 
+		    }
+		    // */	
+		} // End Triangle
 	    }
+
 	}
 	clearEdges();
 	return true;

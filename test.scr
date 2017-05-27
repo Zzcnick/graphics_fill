@@ -1,7 +1,8 @@
 push
-rotate x 30
-box 200 300 300 100 100 100
-// torus 250 250 0 50 100
-// sphere 250 250 0 100
+move 250 250 0
+//rotate x 90
+//box 200 300 300 100 100 100
+torus 0 0 0 50 100
+//sphere 250 250 0 100
 
 save sphere.ppm

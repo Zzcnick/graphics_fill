@@ -1,8 +1,8 @@
 all: Picture.java
-	javac Picture.java && java Picture && display tri.ppm
+	javac Picture.java && java Picture test.scr && display sphere.ppm
 
 all2: Picture.java
-	javac Picture.java && java Picture test.scr && display sphere.ppm
+	javac Picture.java && java Picture && display tri.ppm
 
 run2: Picture.java
 	make && echo "Running..." && java Picture && make png && rm out.ppm && echo "Saved as out.png" && display out.png
