@@ -677,7 +677,7 @@ public class Canvas {
     public boolean draw_pixel(int x, int y, Pixel p) {
 	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
 	    return false;
-	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x]))
+	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x])) // Z Buffering
 	    canvas[y][x] = p;
 	return true;
     }
@@ -722,39 +722,54 @@ public class Canvas {
     }
 
     // Bresenham's Line Algorithm - 8 Octants
-    public boolean line(int x1, int y1, int x2, int y2) {
-	return line(x1, y1, x2, y2, new Pixel(0, 0, 0));
+    public boolean line(int x1, int y1, double z1, int x2, int y2, double z2) {
+	return line(x1, y1, 0, x2, y2, 0, new Pixel(0,0,0));
     }
-    public boolean line(int x1, int y1, int x2, int y2, Pixel p) {
-	if (x2 < x1) return line(x2, y2, x1, y1, p);
+    public boolean line(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
+	if (x2 < x1) return line(x2, y2, z2, x1, y1, z1, p);
 	int dy = y2 > y1 ? y2 - y1 : y1 - y2; // positive difference
 	int dx = x2 - x1; // always positive
 	int m = y2 > y1 ? 1 : -1;
 	if (dy > dx)
-	    if (m > 0)
+	    if (m > 0) {
+		// return line2(x1, y1, x2, y2, p); // Vertical - Octant 2 - No Z Buffering
 		return line2(x1, y1, x2, y2, p); // Vertical - Octant 2
-	    else
+	    } else {
+		// return line7(x1, y1, x2, y2, p); // Vertical - Octant 7 - No Z Buffering
 		return line7(x1, y1, x2, y2, p); // Vertical - Octant 7
+	    }
 	else
-	    if (m > 0)
+	    if (m > 0) {
+		// return line1(x1, y1, x2, y2, p); // Horizontal - Octant 1 - No Z Buffering
 		return line1(x1, y1, x2, y2, p); // Horizontal - Octant 1
-	    else
-		return line8(x1, y1, x2, y2, p); // Horizontal - Octant 8
+	    } else {
+		// return line8(x1, y1, x2, y2, p); // Horizontal - Octant 8 - No Z Buffering	
+		return line8(x1, y1, x2, y2, p); // Horizontal - Octant 8	
+	    }
     }
-    public boolean line7(int x1, int y1, int x2, int y2, Pixel p) {
+    public boolean line(int x1, int y1, int x2, int y2) {
+	return line(x1, y1, x2, y2, new Pixel(0, 0, 0));
+    }
+    public boolean line(int x1, int y1, int x2, int y2, Pixel p) {
+	return line(x1, y1, 0, x2, y2, 0, p);
+    }
+    public boolean line7(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
 	int A = y2 - y1; // dy
 	int B = x1 - x2; // -dx
 	int d = -2 * B + A;
+	double Z = z1; // Starting Z
+	double dZ = y2 == y1 ? 0 : (z2 - z1) / (y1 - y2); // dZ
 	A = 2 * A;
 	B = -2 * B;
 	while (y1 >= y2) {
-	    draw_pixel(x1, y1, p);
+	    draw_pixel(x1, y1, Z, p);
 	    if (d > 0) {
 		x1++;
 		d += A;
 	    }
 	    y1--;
 	    d += B;
+	    Z += dZ; // Adding dZ
 	}
 	return true;
     }
@@ -762,50 +777,59 @@ public class Canvas {
 	int A = y2 - y1; // dy
 	int B = x1 - x2; // -dx
 	int d = 2 * B + A;
+	double Z = z1; // Starting Z
+	double dZ = y2 == y1 ? 0 : (z2 - z1) / (y2 - y1); // dZ
 	A = 2 * A;
 	B = 2 * B;
 	while (y1 <= y2) {
-	    draw_pixel(x1, y1, p);
+	    draw_pixel(x1, y1, Z, p);
 	    if (d < 0) {
 		x1++;
 		d += A;
 	    }
 	    y1++;
 	    d += B;
+	    Z += dZ; // Adding dZ
 	}
 	return true;
     }
-    public boolean line8(int x1, int y1, int x2, int y2, Pixel p) {
+    public boolean line8(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
 	int A = y2 - y1; // dy
 	int B = x1 - x2; // -dx
 	int d = 2 * A - B;
 	A = 2 * A;
 	B = -2 * B;
+	double Z = z1; // Starting Z
+	double dZ = y2 == y1 ? 0 : (z2 - z1) / (x2 - x1); // dZ
 	while (x1 <= x2) {
-	    draw_pixel(x1, y1, p);
+	    draw_pixel(x1, y1, Z, p);
 	    if (d < 0) {
 		y1--;
 		d += B;
 	    }
 	    x1++;
 	    d += A;
+	    Z += dZ; // Adding dZ
 	}
 	return true;
     }
-    public boolean line1(int x1, int y1, int x2, int y2, Pixel p) {
+    public boolean line1(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
 	int A = y2 - y1; // dy
 	int B = x1 - x2; // -dx
 	int d = 2 * A + B;
+	double Z = z1; // Starting Z
+	double dZ = y2 == y1 ? 0 : (z2 - z1) / (x2 - x1); // dZ
 	A = 2 * A;
 	B = 2 * B;
 	while (x1 <= x2) {
-	    draw_pixel(x1, y1, p);
+	    draw_pixel(x1, y1, Z, p);
 	    if (d > 0) {
 		y1++;
 		d += B;
 	    }
 	    x1++;
 	    d += A;
+	    Z += dZ; // Adding dZ
 	}
 	return true;
     }
