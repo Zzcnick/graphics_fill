@@ -1,8 +1,8 @@
 all: Picture.java
-	javac Picture.java && java Picture test.scr && display sphere.ppm
+	javac Picture.java && java Picture test.scr && convert *.ppm -loop 0 -delay 2 tri.gif && animate tri.gif
 
-all2: Picture.java
-	javac Picture.java && java Picture && display tri.ppm
+test: Picture.java
+	javac Picture.java && java Picture test2.scr && display out.ppm
 
 run2: Picture.java
 	make && echo "Running..." && java Picture && make png && rm out.ppm && echo "Saved as out.png" && display out.png

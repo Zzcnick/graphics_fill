@@ -681,6 +681,17 @@ public class Canvas {
 	    canvas[y][x] = p;
 	return true;
     }
+    public boolean draw_pixel(int x, int y, double Z, Pixel p) {
+	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
+	    return false;
+	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x])) // Z Buffering
+	    {
+		p = new Pixel(p.getRGB(), Z);
+		canvas[y][x] = p;
+		return true;
+	    }
+	return false;
+    }
     public boolean draw_pixel(int x, int y) {
 	return draw_pixel(x, y, new Pixel(0, 0, 0));
     }
@@ -733,18 +744,18 @@ public class Canvas {
 	if (dy > dx)
 	    if (m > 0) {
 		// return line2(x1, y1, x2, y2, p); // Vertical - Octant 2 - No Z Buffering
-		return line2(x1, y1, x2, y2, p); // Vertical - Octant 2
+		return line2(x1, y1, z1, x2, y2, z2, p); // Vertical - Octant 2
 	    } else {
 		// return line7(x1, y1, x2, y2, p); // Vertical - Octant 7 - No Z Buffering
-		return line7(x1, y1, x2, y2, p); // Vertical - Octant 7
+		return line7(x1, y1, z1, x2, y2, z2, p); // Vertical - Octant 7
 	    }
 	else
 	    if (m > 0) {
 		// return line1(x1, y1, x2, y2, p); // Horizontal - Octant 1 - No Z Buffering
-		return line1(x1, y1, x2, y2, p); // Horizontal - Octant 1
+		return line1(x1, y1, z1, x2, y2, z2, p); // Horizontal - Octant 1
 	    } else {
 		// return line8(x1, y1, x2, y2, p); // Horizontal - Octant 8 - No Z Buffering	
-		return line8(x1, y1, x2, y2, p); // Horizontal - Octant 8	
+		return line8(x1, y1, z1, x2, y2, z2, p); // Horizontal - Octant 8
 	    }
     }
     public boolean line(int x1, int y1, int x2, int y2) {
@@ -762,6 +773,7 @@ public class Canvas {
 	A = 2 * A;
 	B = -2 * B;
 	while (y1 >= y2) {
+	    
 	    draw_pixel(x1, y1, Z, p);
 	    if (d > 0) {
 		x1++;
@@ -773,7 +785,7 @@ public class Canvas {
 	}
 	return true;
     }
-    public boolean line2(int x1, int y1, int x2, int y2, Pixel p) {
+    public boolean line2(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
 	int A = y2 - y1; // dy
 	int B = x1 - x2; // -dx
 	int d = 2 * B + A;
