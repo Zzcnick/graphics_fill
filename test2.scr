@@ -1,7 +1,9 @@
+frames 30
 push
 
 move 250 250 0
-rotate x 80
+rotate x 360 spin
 torus 0 0 0 50 150
+sphere 0 0 0 80
 
-save out.ppm
+vary spin 0 29 0 1
