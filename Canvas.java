@@ -637,9 +637,9 @@ public class Canvas {
 			}
 		    }
 
-		    /* System.out.println("top: " + tx + "," + ty + "\n" + 
-		       "mid: " + mx + "," + my + "\n" + 
-		       "bot: " + bx + "," + by); // */ // Debugging 
+		    System.out.println("top: " + tx + "," + ty + "," + tz + "\n" + 
+				       "mid: " + mx + "," + my + "," + mz + "\n" + 
+				       "bot: " + bx + "," + by + "," + bz); // */ // Debugging 
 
 		    double xL = bx; // bx -> tx
 		    double xR = bx; // bx -> mx -> tx
@@ -660,6 +660,7 @@ public class Canvas {
 			    zR = mz;
 			}
 			line((int)xL, y, zL, (int)xR, y, zR, p);
+			// System.out.println("zL: " + zL + "\tzR: " + zR); // Debugging
 			xL += dxL; xR += dxR; 
 			zL += dzL; zR += dzR;
 		    }
@@ -693,7 +694,7 @@ public class Canvas {
 	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
 	    return false;
 	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x])) // Z Buffering
-	    {
+	    { // Debug Here
 		p = new Pixel(p.getRGB(), Z);
 		canvas[y][x] = p;
 		return true;
@@ -742,7 +743,7 @@ public class Canvas {
 
     // Bresenham's Line Algorithm - 8 Octants
     public boolean line(int x1, int y1, double z1, int x2, int y2, double z2) {
-	return line(x1, y1, 0, x2, y2, 0, new Pixel(0,0,0));
+	return line(x1, y1, z1, x2, y2, z2, new Pixel(0,0,0));
     }
     public boolean line(int x1, int y1, double z1, int x2, int y2, double z2, Pixel p) {
 	if (x2 < x1) return line(x2, y2, z2, x1, y1, z1, p);
@@ -865,6 +866,26 @@ public class Canvas {
 	    for (int j = 0; j < x; j++) {
 		// System.out.printf("x: %d\ty: %d\n", j, i); // Debugging
 		pw.print(canvas[i][j]);
+	    }
+	}
+	pw.close();
+	return true;
+    }
+
+    // Z Buffering Debugging
+    public boolean savez(String name) throws FileNotFoundException {
+	PrintWriter pw = new PrintWriter(new File(name));
+	pw.print("P3 " + x + " " + y + " 255\n"); // Heading
+	for (int i = y - 1; i > -1; i--) {
+	    for (int j = 0; j < x; j++) {
+		// System.out.printf("x: %d\ty: %d\n", j, i); // Debugging
+		double Z = canvas[i][j].getZ();
+		int low = 0;
+		int high = 500;
+		int scaledZ = (int)((Z - low) * 255 / (high - low));
+		if (scaledZ < 0) scaledZ = 0;
+		else if (scaledZ > 255) scaledZ = 255;
+		pw.print(new Pixel(scaledZ, scaledZ, scaledZ));
 	    }
 	}
 	pw.close();
