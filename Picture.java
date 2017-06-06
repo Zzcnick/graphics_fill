@@ -131,7 +131,6 @@ public class Picture {
 	    em.add_triangle(100,150,100,
 			    150,100,500,
 			    200,150,100);
-
 	    em.add_triangle(100,100,100,
 			    200,100,100,
 			    150,150,500);
@@ -174,7 +173,7 @@ public class Picture {
 	    while (cmdpad.length() < pad)
 		cmdpad += " ";
 	    if (c.getFramecount() == 1)
-		System.out.println("Executing Command: " + cmdpad + "| Inputs: " + buffer); // Debugging
+		System.out.println("Executing Command: " + cmdpad + "| Inputs: " + buffer); // Debugging - Keep On
 	    
 	    boolean executed = false;
 	    if (cmd.equals("line")) {

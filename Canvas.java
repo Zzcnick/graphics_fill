@@ -636,8 +636,8 @@ public class Canvas {
 			    by = yi1; bx = x1; bz = z1;
 			}
 		    }
-
-		    System.out.println("top: " + tx + "," + ty + "," + tz + "\n" + 
+		    
+		    /* System.out.println("top: " + tx + "," + ty + "," + tz + "\n" + 
 				       "mid: " + mx + "," + my + "," + mz + "\n" + 
 				       "bot: " + bx + "," + by + "," + bz); // */ // Debugging 
 
@@ -686,21 +686,13 @@ public class Canvas {
     public boolean draw_pixel(int x, int y, Pixel p) {
 	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
 	    return false;
-	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x])) // Z Buffering
+	if (p.compareZ(canvas[y][x])) // Z Buffering
 	    canvas[y][x] = p;
 	return true;
     }
     public boolean draw_pixel(int x, int y, double Z, Pixel p) {
-	if (x < 0 || x >= this.x || y < 0 || y >= this.y)
-	    return false;
-	if (canvas[y][x].equals(null) || p.compareZ(canvas[y][x])) // Z Buffering
-	    { // Debug Here
-		p = new Pixel(p.getRGB(), Z);
-		canvas[y][x] = p;
-		return true;
-	    }
-	return false;
-    }
+	return draw_pixel(x, y, new Pixel(p.getRGB(), Z));
+			  }
     public boolean draw_pixel(int x, int y) {
 	return draw_pixel(x, y, new Pixel(0, 0, 0));
     }

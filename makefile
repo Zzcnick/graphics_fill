@@ -1,5 +1,5 @@
 all: Picture.java
-	javac Picture.java && java Picture test.scr && "Making tri.gif..." && convert *.ppm -loop 0 -delay 2 tri.gif && animate tri.gif
+	javac Picture.java && java Picture test.scr && echo "Making tri.gif..." && convert *.ppm -loop 0 -delay 2 tri.gif && animate tri.gif
 
 test: Picture.java
 	javac Picture.java && java Picture test2.scr && echo "Making spin.gif..." &&  convert *.ppm -loop 0 -delay 20 spin.gif && display spin.gif
